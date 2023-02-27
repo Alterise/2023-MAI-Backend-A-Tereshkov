@@ -22,6 +22,6 @@ print("Output:", cache.get('1'))
 cache.set('6', 'f')
 
 print("Output:", cache.get('1'))
-
 print("Output:", cache.get('2'))
+print("Output:", cache.get('3'))
 print("Output:", cache.get('6'))
