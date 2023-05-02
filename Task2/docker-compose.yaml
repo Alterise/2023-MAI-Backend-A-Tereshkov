@@ -1,0 +1,17 @@
+version: "3.9"
+
+services:
+    games:
+        build: .
+        ports:
+            - "8000:8000"
+    nginx:
+        image: nginx:1.21.3
+        ports:
+          - "8080:8080"
+        volumes:
+          - ./nginx.conf:/etc/nginx/nginx.conf
+          - ./1.jpg:/etc/public/anime.jpg
+        depends_on:
+            - games
+
