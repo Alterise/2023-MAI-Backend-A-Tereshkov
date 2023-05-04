@@ -1,6 +1,6 @@
 import random
 
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseBadRequest
 
 from django.views.decorators.http import require_http_methods
 
@@ -41,3 +41,11 @@ def character(request, character_id):
         'lvl': random.randint(1, 80)
     }
     return JsonResponse(character_info)
+
+
+@require_http_methods(["GET", "POST"])
+def error(request):
+    if request.method == "GET":
+        return HttpResponseBadRequest("ERROR")
+    else:
+        return JsonResponse({'response': "SUCCESS"})

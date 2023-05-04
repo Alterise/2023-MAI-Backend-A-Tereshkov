@@ -23,5 +23,6 @@ from . import views
 urlpatterns = [
     path('profile', views.profile, name='profile'),
     path('inventory/<int:character_id>', views.inventory, name='inventory'),
-    path('character/<int:character_id>', views.character, name='character')
+    path('character/<int:character_id>', views.character, name='character'),
+    path('error', views.error, name='error')
 ]
