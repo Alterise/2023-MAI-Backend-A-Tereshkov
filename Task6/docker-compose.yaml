@@ -3,14 +3,19 @@ version: "3.9"
 services:
     django:
         build: ./django/
-        command: "python manage.py runserver 0.0.0.0:8000"
+        command: sh -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
         ports:
           - "8000:8000"
         healthcheck:
-          test: [ "CMD", "curl", "--fail", "http://localhost:8000/user/profile" ]
+          test: [ "CMD", "curl", "-f", "http://localhost:8000/user/profile" ]
           interval: 15s
           timeout: 25s
         restart: unless-stopped
+        depends_on:
+          db:
+            condition: service_healthy
+        networks:
+          - db
     nginx:
         image: nginx:1.21.3
         ports:
@@ -20,4 +25,26 @@ services:
         depends_on:
             django:
               condition: service_healthy
+        networks:
+          - db
+    db:
+      image: postgres:14.7
+      environment:
+        POSTGRES_DB: mydb
+        POSTGRES_USER: alex
+        POSTGRES_PASSWORD: qwerty
+      healthcheck:
+        test: [ "CMD-SHELL", "echo 'SELECT 1;' | psql -U alex -d mydb" ]
+        interval: 3s
+        timeout: 5s
+      restart: unless-stopped
+      ports:
+        - "5432:5432"
+      volumes:
+        - ./pgdata:/var/lib/postgresql/data
+      networks:
+        - db
 
+networks:
+    db:
+        driver: bridge
